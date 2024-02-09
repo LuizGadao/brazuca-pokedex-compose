@@ -15,4 +15,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "BrazucaPokedexCompose"
 include(":app")
-include(":app:core")
+include(":core")
