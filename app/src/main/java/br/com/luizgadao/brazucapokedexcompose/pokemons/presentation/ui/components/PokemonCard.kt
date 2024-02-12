@@ -1,7 +1,9 @@
 package br.com.luizgadao.brazucapokedexcompose.pokemons.presentation.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -10,15 +12,17 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.capitalize
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -27,6 +31,7 @@ import br.com.luizgadao.brazucapokedexcompose.pokemons.data.network.request.Type
 import br.com.luizgadao.brazucapokedexcompose.ui.theme.BrazucaPokedexComposeTheme
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import java.util.Locale
 
 @Composable
 fun PokemonCard(
@@ -39,22 +44,57 @@ fun PokemonCard(
             .height(180.dp)
             .clip(RoundedCornerShape(18.dp))
             .background(Color(pokemonResponse.getColor()))
-            .padding(start = 16.dp, end = 16.dp, top = 16.dp)
+            .padding(start = 16.dp, top = 16.dp)
     ) {
 
         Text(
-            text = pokemonResponse.name,
+            modifier = Modifier.align(Alignment.TopCenter),
+            text = pokemonResponse.name.replaceFirstChar { it.titlecase(Locale.getDefault()) },
             style = MaterialTheme.typography
-                .titleLarge.copy(fontSize = 22.sp, color = Color.White)
+                .titleLarge.copy(
+                    fontSize = 20.sp,
+                    color = Color.White,
+                    fontWeight = FontWeight.Normal
+                )
         )
 
         PokemonImage(
             modifier = Modifier
                 .size(120.dp)
                 //.background(Color.Black)
-                .align(Alignment.BottomCenter),
+                .align(Alignment.BottomEnd),
             url = pokemonResponse.img
         )
+
+        TypesChips(
+            modifier = Modifier
+                .padding(top = 50.dp),
+            types = pokemonResponse.types
+        )
+    }
+}
+
+@Composable
+fun TypesChips(
+    modifier: Modifier = Modifier,
+    types: List<Types>
+) {
+    Column(
+        modifier = modifier
+    ) {
+
+        types.forEach { type ->
+            Text(
+                text = type.type.name,
+                modifier = Modifier
+                    .padding(top = 8.dp)
+                    .border(width = 1.dp, color = Color.White, shape = RoundedCornerShape(12.dp))
+                    .padding(5.dp),
+                style = MaterialTheme.typography.bodySmall,
+                color = Color.White
+            )
+        }
+
     }
 }
 
@@ -80,7 +120,9 @@ fun PokemonImage(
 @Composable
 fun PokemonCardPreview(
 ) {
-    val types = Types(Types.Type(name = "grass"))
+    val grass = Types(Types.Type(name = "grass"))
+    val water = Types(Types.Type(name = "water"))
+    val fire = Types(Types.Type(name = "fire"))
 
     BrazucaPokedexComposeTheme {
         PokemonCard(
@@ -90,7 +132,7 @@ fun PokemonCardPreview(
                 .height(180.dp),
             pokemonResponse = PokemonResponse(
                 name = "Gadão",
-                types = listOf(types)
+                types = listOf(grass, water, fire)
             )
         )
     }

@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.luizgadao.brazucapokedexcompose.pokemons.data.network.request.NetworkDataSource
-import br.com.luizgadao.brazucapokedexcompose.pokemons.data.network.request.PokemonResponse
 import br.com.luizgadao.core.network.KtorClient
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
