@@ -29,7 +29,7 @@ class PokemonListViewModel : ViewModel() {
         }
 
         networkDataSource
-            .getPokemons(offset = 0, limit = 250)
+            .getPokemons(offset = 0, limit = 50)
             .success { apiResponse ->
                 Log.i("PokemonListApiResponse", apiResponse.results[0].name)
 

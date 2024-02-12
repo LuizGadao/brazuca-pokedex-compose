@@ -18,13 +18,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.com.luizgadao.brazucapokedexcompose.pokemons.data.network.request.PokemonResponse
 import br.com.luizgadao.brazucapokedexcompose.pokemons.data.network.request.Types
 import br.com.luizgadao.brazucapokedexcompose.ui.theme.BrazucaPokedexComposeTheme
-import coil.compose.SubcomposeAsyncImage
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 
 @Composable
 fun PokemonCard(
@@ -47,7 +49,8 @@ fun PokemonCard(
         )
 
         PokemonImage(
-            modifier = Modifier.size(120.dp)
+            modifier = Modifier
+                .size(120.dp)
                 //.background(Color.Black)
                 .align(Alignment.BottomCenter),
             url = pokemonResponse.img
@@ -60,9 +63,12 @@ fun PokemonImage(
     modifier: Modifier = Modifier,
     url: String
 ) {
-    SubcomposeAsyncImage(
-        model = url,
-        contentDescription = "pokeomon image",
+    AsyncImage(
+        model = ImageRequest.Builder(LocalContext.current)
+            .data(url)
+            .crossfade(true)
+            .build(),
+        contentDescription = "pokemon image",
         modifier = modifier
             .fillMaxWidth()
             .aspectRatio(1f),
