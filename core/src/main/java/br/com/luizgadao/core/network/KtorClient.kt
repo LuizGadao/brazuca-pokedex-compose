@@ -1,19 +1,21 @@
 package br.com.luizgadao.core.network
 
 import io.ktor.client.HttpClient
+import io.ktor.client.call.body
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.plugins.logging.SIMPLE
+import io.ktor.client.request.get
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import java.lang.Exception
 
 class KtorClient {
-    private val client = HttpClient(OkHttp) {
-        defaultRequest { url("https://pokeapi.co/api/v2/pokemon") }
+    val httpClient: HttpClient = HttpClient(OkHttp) {
+        defaultRequest { url("https://pokeapi.co/api/v2/") }
 
         install(Logging) { logger = Logger.SIMPLE }
 
@@ -28,7 +30,7 @@ class KtorClient {
         }
     }
 
-    private inline fun <T> request(apiCall: () -> T): NetworkResult<T> {
+    inline fun <T> request(apiCall: () -> T): NetworkResult<T> {
         return try {
             NetworkResult.Success(data = apiCall())
         } catch (e: Exception) {
@@ -40,6 +42,13 @@ class KtorClient {
 sealed interface NetworkResult<T> {
     data class Success<T>(val data: T) : NetworkResult<T>
     data class Failure<T>(val exception: Exception) : NetworkResult<T>
+
+    fun <R> mapSuccess(transform: (T) -> R) : NetworkResult<R> {
+        return when(this) {
+            is Success -> Success(transform(data))
+            is Failure -> Failure(exception)
+        }
+    }
 
     fun success(block: (T) -> Unit): NetworkResult<T> {
         if (this is Success) block(data)
